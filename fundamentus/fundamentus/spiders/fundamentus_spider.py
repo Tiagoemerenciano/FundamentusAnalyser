@@ -3,11 +3,12 @@ import logging
 from fundamentus.items import StockItem
 from scrapy.loader import ItemLoader
 
-
 class FundamentusSpider(scrapy.Spider):
-    name = 'f'
+    name = 'fundamentus'
 
     def start_requests(self):
+        param_negociada = 'ON'
+        param_ordem = '1'
         yield scrapy.FormRequest(
             url='http://www.fundamentus.com.br/resultado.php?negociada=ON&ordem=1',
             callback=self.parse,
@@ -15,12 +16,10 @@ class FundamentusSpider(scrapy.Spider):
                 'User-agent': 'Mozilla/5.0 (Windows; U; Windows NT 6.1; rv:2.2) Gecko/20110201',
                 'Accept': 'text/html, text/plain, text/css, text/sgml, */*;q=0.01'
             },
-            formdata=dict(negociada='ON', ordem='1')
+            formdata=dict(negociada=param_negociada, ordem=param_ordem)
         )
 
-    def parse(self, response):
-      stock = ItemLoader(item=StockItem(), response=response)
-      
+    def parse(self, response):      
       stock_model = StockItem()
 
       data_table = response.xpath('//*[@id="resultado"]/tbody/tr')
@@ -51,5 +50,3 @@ class FundamentusSpider(scrapy.Spider):
           stock_model['div_brut_patrim'] = data_line.xpath('.//td[20]/text()').get()
           stock_model['cresc_rec_cinco_anos'] = data_line.xpath('.//td[21]/text()').get()
           yield stock_model
-
-      return stock.load_item()

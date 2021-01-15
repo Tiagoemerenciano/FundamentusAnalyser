@@ -12,7 +12,7 @@ from scrapy.exporters import JsonItemExporter
 
 class FundamentusPipeline(object):
     def open_spider(self, spider):
-        self.file = open("books.json", 'wb')
+        self.file = open("Fundamentos.json", 'wb')
         self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
         self.exporter.start_exporting()
 
