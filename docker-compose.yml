@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  postgres:
+    build:
+      context: ./Dockerfiles
+      dockerfile: DSchema
+    container_name: postgres
+    ports: 
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    networks:
+      - fundamentus-platform
+
+  portainer:
+    restart: always
+    image: "portainer/portainer"
+    container_name: "portainer"
+    command: --no-auth
+    ports:
+      - 9000:9000
+    networks:
+      - fundamentus-platform
+
+  scrapy:
+    build:
+      context: ./WebScrap
+      dockerfile: DScrapy
+    container_name: scrapy
+    depends_on: 
+      - postgres
+    networks:
+      - fundamentus-platform
+  
+networks:
+  fundamentus-platform:
+    driver: bridge

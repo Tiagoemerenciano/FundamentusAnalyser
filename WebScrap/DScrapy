@@ -1,0 +1,12 @@
+FROM python:3.8.7
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN pip install pipenv && \
+  apt-get update && \
+  apt-get install -y gcc python3-dev && \
+  pipenv install --system --deploy
+
+RUN cd /usr/src/app/fundamentus && pipenv run scrapy crawl fundamentus

@@ -16,24 +16,17 @@ logger = logging.getLogger('pipeline')
 
 class FundamentusPostgrePipeline(object):
   def open_spider(self, spider):
-    hostname = 'localhost'
+    hostname = 'host.docker.internal'
     username = 'postgres'
     password = 'postgres'
     database = 'postgres'
-    port = 15432
+    port = 5432
     self.connection = psycopg2.connect(host=hostname, user=username, password=password, dbname=database, port=port)
     self.cursor = self.connection.cursor()
-
-    # self.file = open("Fundamentos.json", 'wb')
-    # self.exporter = JsonItemExporter(self.file, encoding='utf-8', ensure_ascii=False)
-    # self.exporter.start_exporting()
 
   def close_spider(self, spider):
     self.cursor.close()
     self.connection.close()
-
-    # self.exporter.finish_exporting()
-    # self.file.close()
 
   def process_item(self, item, spider):
     try:
@@ -116,6 +109,5 @@ class FundamentusPostgrePipeline(object):
       logger.error(error)
       self.connection.rollback()
       pass
-
-    # self.exporter.export_item(item)
+    
     return item
